@@ -176,7 +176,7 @@ const jp: LocaleType = {
   },
   Store: {
     DefaultTopic: "新しいチャット",
-    BotHello: "何かお手伝いできることはありますか",
+    BotHello: "個人情報、会社秘密情報、または顧客さんの情報をこっちに入れないでください。こんにちは、何かお手伝いできることはありますか",
     Error: "エラーが発生しました。しばらくしてからやり直してください。",
     Prompt: {
       History: (content: string) =>
