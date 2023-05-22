@@ -178,7 +178,7 @@ const en: RequiredLocaleType = {
   },
   Store: {
     DefaultTopic: "New Conversation",
-    BotHello: "<font color=red>DO NOT enter private information, company secret or customer's information here. </font>Hello! How can I assist you today?",
+    BotHello: "DO NOT enter private information, company secret or customer's information here, or any other content that against the law. Hello! How can I assist you today?",
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>
