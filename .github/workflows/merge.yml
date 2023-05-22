@@ -1,0 +1,27 @@
+name: Merge main branch
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Merge main branch
+        run: |
+          git merge main --no-ff -m "Merge main branch"
+          git push origin HEAD
