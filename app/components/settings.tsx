@@ -264,11 +264,11 @@ export function Settings() {
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  //const showUsage = accessStore.isAuthorized();
+  const showUsage = false; //accessStore.isAuthorized();
   useEffect(() => {
     // checks per minutes
     checkUpdate();
-    //showUsage && checkUsage();
+    showUsage && checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -518,7 +518,7 @@ export function Settings() {
             </ListItem>
           ) : null}
 
-          {/* <ListItem
+          <ListItem
             title={Locale.Settings.Usage.Title}
             subTitle={
               showUsage
@@ -541,7 +541,7 @@ export function Settings() {
               />
             )}
           </ListItem>
-        </List> */}
+        </List>
 
         <List>
           <ListItem
