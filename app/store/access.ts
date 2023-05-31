@@ -30,7 +30,7 @@ export const useAccessStore = create<AccessControlStore>()(
       accessCode: "",
       needCode: true,
       hideUserApiKey: false,
-      openaiUrl: "/api/openai/",
+      openaiUrl: "/${window.location.pathname.split('/')[1]}/api/openai/",
 
       enabledAccessControl() {
         get().fetch();
