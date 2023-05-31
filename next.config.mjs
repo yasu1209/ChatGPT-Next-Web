@@ -39,6 +39,7 @@ const nextConfig = {
     return config;
   },
   output: "standalone",
+  assetPrefix: './',
 };
 
 export default nextConfig;
