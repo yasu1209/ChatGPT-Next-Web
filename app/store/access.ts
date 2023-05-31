@@ -4,7 +4,6 @@ import { StoreKey } from "../constant";
 import { getHeaders } from "../client/api";
 import { BOT_HELLO } from "./chat";
 import { ALL_MODELS } from "./config";
-import { useRouter } from 'next/router'
 
 export interface AccessControlStore {
   accessCode: string;
@@ -23,18 +22,15 @@ export interface AccessControlStore {
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
-const router = useRouter();
-const contextPath = router.basePath;
-
-
 export const useAccessStore = create<AccessControlStore>()(
+  
   persist(
     (set, get) => ({
       token: "",
       accessCode: "",
       needCode: true,
       hideUserApiKey: false,
-      openaiUrl: contextPath + "/api/openai/",
+      openaiUrl: "/api/openai/",
 
       enabledAccessControl() {
         get().fetch();
