@@ -103,7 +103,7 @@ function _MarkDownContent(props: { content: string }) {
         pre: PreCode,
         a: (aProps) => {
           const href = aProps.href || "";
-          const isInternal = /^\/#/i.test(href);
+          const isInternal = /^\.\/#/i.test(href);
           const target = isInternal ? "_self" : aProps.target ?? "_blank";
           return <a {...aProps} target={target} />;
         },
