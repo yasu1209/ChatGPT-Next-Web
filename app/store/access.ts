@@ -54,7 +54,7 @@ export const useAccessStore = create<AccessControlStore>()(
       fetch() {
         if (fetchState > 0) return;
         fetchState = 1;
-        fetch("/api/config", {
+        fetch("/${window.location.pathname.split('/')[1]}/api/config", {
           method: "post",
           body: null,
           headers: {
