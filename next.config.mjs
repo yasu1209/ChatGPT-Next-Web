@@ -12,6 +12,7 @@ const nextConfig = {
     return config;
   },
   output: mode,
+  assetPrefix: './',
 };
 
 if (mode !== "export") {
@@ -45,11 +46,5 @@ if (mode !== "export") {
     };
   };
 }
-
-    return config;
-  },
-  output: "standalone",
-  assetPrefix: './',
-};
 
 export default nextConfig;
