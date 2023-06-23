@@ -18,6 +18,11 @@ function getIP(req: NextRequest) {
 // if succeed, return true
 // if failed, return false
 async function validateAccessToken(accessToken: string, tokenUrl: string) {
+  if (tokenUrl === "") {
+    return new Promise((resolve, reject) => {
+      resolve(false);
+    });
+  }
   return new Promise((resolve, reject) => {
     fetch(tokenUrl + "?token=" + accessToken, {
       method: "post",
@@ -70,7 +75,7 @@ export async function auth(req: NextRequest) {
 
   if (serverConfig.allowToken && accessToken !== "") {
     let errorFlag = false;
-    await validateAccessToken(accessToken, serverConfig.tokenURL).then(
+    await validateAccessToken(accessToken, serverConfig.tokenURL ?? "").then(
       (flag) => {
         if (!flag) {
           errorFlag = true;
