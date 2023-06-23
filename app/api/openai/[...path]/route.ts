@@ -31,7 +31,7 @@ async function handle(
     );
   }
 
-  const authResult = auth(req);
+  const authResult = await auth(req);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,

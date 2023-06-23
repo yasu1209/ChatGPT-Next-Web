@@ -10,6 +10,8 @@ declare global {
       VERCEL?: string;
       HIDE_USER_API_KEY?: string; // disable user's api key input
       DISABLE_GPT4?: string; // allow user to use gpt-4 or not
+      ALLOW_TOKEN?: string;
+      VALIDATE_TOKEN_URL?: string;
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
     }
@@ -46,5 +48,7 @@ export const getServerSideConfig = () => {
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
+    allowToken: process.env.ALLOW_TOKEN,
+    tokenURL: process.env.VALIDATE_TOKEN_URL,
   };
 };

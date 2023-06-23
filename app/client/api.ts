@@ -1,5 +1,5 @@
 import { getClientConfig } from "../config/client";
-import { ACCESS_CODE_PREFIX } from "../constant";
+import { ACCESS_CODE_PREFIX, ACCESS_TOKEN_PREFIX } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 
@@ -129,9 +129,16 @@ export function getHeaders() {
   const makeBearer = (token: string) => `Bearer ${token.trim()}`;
   const validString = (x: string) => x && x.length > 0;
 
+  // get access token from url parameter
+  // if not exists, set empty string
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("access_token") || "";
+
   // use user's api key first
   if (validString(accessStore.token)) {
     headers.Authorization = makeBearer(accessStore.token);
+  } else if (token !== "") {
+    headers.Authorization = makeBearer(ACCESS_TOKEN_PREFIX + token);
   } else if (
     accessStore.enabledAccessControl() &&
     validString(accessStore.accessCode)

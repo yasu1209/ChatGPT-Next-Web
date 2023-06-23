@@ -9,6 +9,7 @@ import { getClientConfig } from "../config/client";
 export interface AccessControlStore {
   accessCode: string;
   token: string;
+  accessToken: string;
 
   needCode: boolean;
   hideUserApiKey: boolean;
@@ -16,6 +17,7 @@ export interface AccessControlStore {
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
+  updateAccessToken: (_: string) => void;
   updateOpenAiUrl: (_: string) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
@@ -29,11 +31,11 @@ const DEFAULT_OPENAI_URL =
 console.log("[API] default openai url", DEFAULT_OPENAI_URL);
 
 export const useAccessStore = create<AccessControlStore>()(
-  
   persist(
     (set, get) => ({
       token: "",
       accessCode: "",
+      accessToken: "",
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: DEFAULT_OPENAI_URL,
@@ -46,6 +48,9 @@ export const useAccessStore = create<AccessControlStore>()(
       updateCode(code: string) {
         set(() => ({ accessCode: code }));
       },
+      updateAccessToken(accessToken: string) {
+        set(() => ({ accessToken }));
+      },
       updateToken(token: string) {
         set(() => ({ token }));
       },
@@ -55,19 +60,26 @@ export const useAccessStore = create<AccessControlStore>()(
       isAuthorized() {
         get().fetch();
 
-        // has token or has code or disabled access control
+        // has token or has code has token or disabled access control
         return (
-          !!get().token || !!get().accessCode || !get().enabledAccessControl()
+          !!get().token ||
+          !!get().accessCode ||
+          !!get().accessToken ||
+          !get().enabledAccessControl()
         );
       },
       fetch() {
+        let urlParams = new URLSearchParams(window.location.search);
+        let token = urlParams.get("access_token") || "";
+        this.accessToken = token;
+
         if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
         fetchState = 1;
-        let contextRoot = window.location.pathname.split('/')[1];
-        if(contextRoot !== "") {
+        let contextRoot = window.location.pathname.split("/")[1];
+        if (contextRoot !== "") {
           contextRoot = "/" + contextRoot;
         }
-        fetch(contextRoot+"/api/config", {
+        fetch(contextRoot + "/api/config", {
           method: "post",
           body: null,
           headers: {
