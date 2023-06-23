@@ -48,7 +48,7 @@ export const getServerSideConfig = () => {
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
-    allowToken: process.env.ALLOW_TOKEN,
+    allowToken: !!process.env.ALLOW_TOKEN,
     tokenURL: process.env.VALIDATE_TOKEN_URL,
   };
 };

@@ -11,6 +11,7 @@ export interface AccessControlStore {
   token: string;
   accessToken: string;
 
+  allowToken: boolean;
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
@@ -36,6 +37,7 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       accessToken: "",
+      allowToken: true,
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: DEFAULT_OPENAI_URL,
@@ -44,6 +46,11 @@ export const useAccessStore = create<AccessControlStore>()(
         get().fetch();
 
         return get().needCode;
+      },
+      enabledTokenValidation() {
+        get().fetch();
+
+        return get().allowToken;
       },
       updateCode(code: string) {
         set(() => ({ accessCode: code }));
@@ -64,7 +71,7 @@ export const useAccessStore = create<AccessControlStore>()(
         return (
           !!get().token ||
           !!get().accessCode ||
-          !!get().accessToken ||
+          (get().allowToken && !!get().accessToken) ||
           !get().enabledAccessControl()
         );
       },
