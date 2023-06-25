@@ -20,8 +20,8 @@ export async function requestOpenai(req: NextRequest) {
     baseUrl = `${PROTOCOL}://${baseUrl}`;
   }
 
-  console.log("[Proxy] ", openaiPath);
-  console.log("[Base Url]", baseUrl);
+  //console.log("[Proxy] ", openaiPath);
+  //console.log("[Base Url]", baseUrl);
 
   if (process.env.OPENAI_ORG_ID) {
     console.log("[Org ID]", process.env.OPENAI_ORG_ID);
@@ -52,6 +52,17 @@ export async function requestOpenai(req: NextRequest) {
   if (DISABLE_GPT4 && req.body) {
     try {
       const clonedBody = await req.text();
+
+      try {
+        const jsonText = JSON.parse(clonedBody);
+        if (jsonText.messages) {
+          console.log(
+            "[Chat] message: ",
+            JSON.parse(clonedBody).messages.slice(-1)[0].content,
+          );
+        }
+      } catch (e) {}
+
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody);
