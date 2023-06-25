@@ -5,6 +5,7 @@ const DEFAULT_PROTOCOL = "https";
 const PROTOCOL = process.env.PROTOCOL ?? DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL ?? OPENAI_URL;
 const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
+const RECORD_MESSAGE = !!process.env.RECORD_MESSAGE;
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
@@ -48,24 +49,28 @@ export async function requestOpenai(req: NextRequest) {
     signal: controller.signal,
   };
 
+  const reqBody = await req.text();
+  fetchOptions.body = reqBody;
+  if (RECORD_MESSAGE) {
+    try {
+      const jsonText = JSON.parse(reqBody);
+      if (jsonText.messages) {
+        console.log(
+          "[Chat] message: ",
+          JSON.parse(reqBody).messages.slice(-1)[0].content,
+        );
+      }
+    } catch (e) {}
+  }
+
   // #1815 try to refuse gpt4 request
   if (DISABLE_GPT4 && req.body) {
     try {
-      const clonedBody = await req.text();
+      //const clonedBody = await req.text();
 
-      try {
-        const jsonText = JSON.parse(clonedBody);
-        if (jsonText.messages) {
-          console.log(
-            "[Chat] message: ",
-            JSON.parse(clonedBody).messages.slice(-1)[0].content,
-          );
-        }
-      } catch (e) {}
+      fetchOptions.body = reqBody;
 
-      fetchOptions.body = clonedBody;
-
-      const jsonBody = JSON.parse(clonedBody);
+      const jsonBody = JSON.parse(reqBody);
 
       if ((jsonBody?.model ?? "").includes("gpt-4")) {
         return NextResponse.json(
