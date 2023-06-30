@@ -61,13 +61,7 @@ const jp: PartialLocaleType = {
   Settings: {
     Title: "設定",
     SubTitle: "設定オプション",
-    Actions: {
-      ClearAll: "すべてのデータをクリア",
-      ResetAll: "すべてのオプションをリセット",
-      Close: "閉じる",
-      ConfirmResetAll: "すべての設定をリセットしてもよろしいですか？",
-      ConfirmClearAll: "すべてのチャットをリセットしてもよろしいですか？",
-    },
+
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "全ての言語",
@@ -165,7 +159,8 @@ const jp: PartialLocaleType = {
   },
   Store: {
     DefaultTopic: "新しいチャット",
-    BotHello: "個人情報、会社秘密情報、または顧客さんの情報、または法律に違反する内容をこっちに入れないでください。こんにちは、何かお手伝いできることはありますか",
+    BotHello:
+      "個人情報、会社秘密情報、または顧客さんの情報、または法律に違反する内容をこっちに入れないでください。こんにちは、何かお手伝いできることはありますか",
     Error: "エラーが発生しました。しばらくしてからやり直してください。",
     Prompt: {
       History: (content: string) =>

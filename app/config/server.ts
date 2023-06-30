@@ -14,6 +14,7 @@ declare global {
       VALIDATE_TOKEN_URL?: string;
       BUILD_MODE?: "standalone" | "export";
       BUILD_APP?: string; // is building desktop app
+      HIDE_BALANCE_QUERY?: string; // allow user to query balance or not
     }
   }
 }
@@ -48,6 +49,7 @@ export const getServerSideConfig = () => {
     isVercel: !!process.env.VERCEL,
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     enableGPT4: !process.env.DISABLE_GPT4,
+    hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
     allowToken: !!process.env.ALLOW_TOKEN,
     tokenURL: process.env.VALIDATE_TOKEN_URL,
   };

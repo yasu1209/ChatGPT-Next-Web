@@ -4,7 +4,8 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往请前往[登录](./#/auth)页输入正确的访问密码，或者在[设置](./#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",  },
+      "访问密码不正确或为空，请前往请前往[登录](./#/auth)页输入正确的访问密码，或者在[设置](./#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+  },
   Auth: {
     Title: "需要密码",
     Tips: "管理员开启了密码验证，请在下方填入访问码",
@@ -16,7 +17,7 @@ const cn = {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
   Chat: {
-    SubTitle: (count: number) => `与 ChatGPT 的 ${count} 条对话`,
+    SubTitle: (count: number) => `共 ${count} 条对话`,
     Actions: {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
@@ -24,7 +25,11 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
+      Pin: "固定",
+      PinToastContent: "已将 2 条对话固定至预设提示词",
+      PinToastAction: "查看",
       Delete: "删除",
+      Edit: "编辑",
     },
     Commands: {
       new: "新建聊天",
@@ -104,13 +109,21 @@ const cn = {
   },
   Settings: {
     Title: "设置",
-    SubTitle: "设置选项",
-    Actions: {
-      ClearAll: "清除所有数据",
-      ResetAll: "重置所有选项",
-      Close: "关闭",
-      ConfirmResetAll: "确认重置所有配置？",
-      ConfirmClearAll: "确认清除所有数据？",
+    SubTitle: "所有设置选项",
+
+    Danger: {
+      Reset: {
+        Title: "重置所有设置",
+        SubTitle: "重置所有设置项回默认值",
+        Action: "立即重置",
+        Confirm: "确认重置所有设置？",
+      },
+      Clear: {
+        Title: "清除所有数据",
+        SubTitle: "清除所有聊天、设置数据",
+        Action: "立即清除",
+        Confirm: "确认清除所有聊天、设置数据？",
+      },
     },
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
@@ -216,7 +229,8 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "请不要在此输入有关个人隐私(包括但不限于本人名称、身份证、电话号码)、公司机密(包括但不限于项目核心代码、表设计明细、公司名称)、客户信息数据(包括但不限于客户名称、客户员工姓名、客户产品信息、客户销售数据)等敏感内容。以及其他违反相应法律法规的内容。你好，有什么可以帮你的吗",
+    BotHello:
+      "请不要在此输入有关个人隐私(包括但不限于本人名称、身份证、电话号码)、公司机密(包括但不限于项目核心代码、表设计明细、公司名称)、客户信息数据(包括但不限于客户名称、客户员工姓名、客户产品信息、客户销售数据)等敏感内容。以及其他违反相应法律法规的内容。你好，有什么可以帮你的吗",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
