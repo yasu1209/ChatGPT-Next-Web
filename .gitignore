@@ -44,5 +44,3 @@ dev
 
 *.key
 *.key.pub
-
-docker-compose.yml
