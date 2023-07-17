@@ -20,12 +20,19 @@ const nextConfig = {
       );
     }
 
+    config.resolve.fallback = {
+      child_process: false,
+    };
+
     return config;
   },
   output: mode,
   assetPrefix: './',
   images: {
     unoptimized: mode === "export",
+  },
+  experimental: {
+    forceSwcTransforms: true,
   },
 };
 

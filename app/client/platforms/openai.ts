@@ -1,5 +1,6 @@
 import {
   DEFAULT_API_HOST,
+  DEFAULT_MODELS,
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
@@ -23,6 +24,8 @@ export interface OpenAIListModelResponse {
 }
 
 export class ChatGPTApi implements LLMApi {
+  private disableListModels = true;
+
   path(path: string): string {
     let contextRoot = window.location.pathname.split("/")[1];
     if (contextRoot !== "") {
@@ -253,6 +256,10 @@ export class ChatGPTApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
+    if (this.disableListModels) {
+      return DEFAULT_MODELS.slice();
+    }
+
     const res = await fetch(this.path(OpenaiPath.ListModelPath), {
       method: "GET",
       headers: {
@@ -261,8 +268,12 @@ export class ChatGPTApi implements LLMApi {
     });
 
     const resJson = (await res.json()) as OpenAIListModelResponse;
-    const chatModels = resJson.data.filter((m) => m.id.startsWith("gpt-"));
+    const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
     console.log("[Models]", chatModels);
+
+    if (!chatModels) {
+      return [];
+    }
 
     return chatModels.map((m) => ({
       name: m.id,
