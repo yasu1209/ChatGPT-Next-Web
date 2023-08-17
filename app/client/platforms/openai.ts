@@ -13,6 +13,7 @@ import {
   fetchEventSource,
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
+import { getClientConfig } from "@/app/config/client";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -32,15 +33,18 @@ export class ChatGPTApi implements LLMApi {
       contextRoot = "/" + contextRoot;
     }
     let openaiUrl = contextRoot + useAccessStore.getState().openaiUrl;
+    const apiPath = "/api/openai";
+
     if (openaiUrl.length === 0) {
-      openaiUrl = DEFAULT_API_HOST;
+      const isApp = !!getClientConfig()?.isApp;
+      openaiUrl = isApp ? DEFAULT_API_HOST : apiPath;
     }
     if (openaiUrl.endsWith("/")) {
       openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
     }
     if (
       !openaiUrl.startsWith("http") &&
-      !openaiUrl.startsWith(contextRoot + "/api/openai")
+      !openaiUrl.startsWith(contextRoot + apiPath)
     ) {
       openaiUrl = "https://" + openaiUrl;
     }
