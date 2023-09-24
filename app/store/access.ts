@@ -62,7 +62,7 @@ export const useAccessStore = createPersistStore(
     fetch() {
       let urlParams = new URLSearchParams(window.location.search);
       let token = urlParams.get("access_token") || "";
-      this.accessToken = token;
+      this.updateAccessToken(token);
 
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
