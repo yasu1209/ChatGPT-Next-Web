@@ -12,7 +12,9 @@ console.log("[API] default openai url", DEFAULT_OPENAI_URL);
 const DEFAULT_ACCESS_STATE = {
   token: "",
   accessCode: "",
+  accessToken: "",
   needCode: true,
+  allowToken: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,
   disableGPT4: false,
@@ -29,8 +31,16 @@ export const useAccessStore = createPersistStore(
 
       return get().needCode;
     },
+    enabledTokenValidation() {
+      this.fetch();
+
+      return get().allowToken;
+    },
     updateCode(code: string) {
       set(() => ({ accessCode: code?.trim() }));
+    },
+    updateAccessToken(accessToken: string) {
+      set(() => ({ accessToken }));
     },
     updateToken(token: string) {
       set(() => ({ token: token?.trim() }));
@@ -43,7 +53,10 @@ export const useAccessStore = createPersistStore(
 
       // has token or has code or disabled access control
       return (
-        !!get().token || !!get().accessCode || !this.enabledAccessControl()
+        !!get().token ||
+        !!get().accessCode ||
+        (get().allowToken && !!get().accessToken) ||
+        !this.enabledAccessControl()
       );
     },
     fetch() {
