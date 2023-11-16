@@ -48,7 +48,8 @@ export class ChatGPTApi implements LLMApi {
       );
     }
 
-    let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+    let baseUrl =
+      contextRoot + (isAzure ? accessStore.azureUrl : accessStore.openaiUrl);
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
@@ -59,11 +60,11 @@ export class ChatGPTApi implements LLMApi {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
     if (
-      !openaiUrl.startsWith("http") &&
+      !baseUrl.startsWith("http") &&
       !baseUrl.startsWith(ApiPath.OpenAI) &&
-      !openaiUrl.startsWith(contextRoot + apiPath)
+      !baseUrl.startsWith(contextRoot + apiPath)
     ) {
-      openaiUrl = "https://" + openaiUrl;
+      baseUrl = "https://" + baseUrl;
     }
 
     if (isAzure) {
