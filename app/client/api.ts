@@ -1,6 +1,11 @@
 import { access } from "fs";
 import { getClientConfig } from "../config/client";
-import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
+import {
+  ACCESS_CODE_PREFIX,
+  ACCESS_TOKEN_PREFIX,
+  Azure,
+  ServiceProvider,
+} from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
 
