@@ -59,7 +59,7 @@ export async function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
-  const { accessCode, accessToken, apiKey: token } = parseApiKey(authToken);
+  const { accessCode, accessToken, apiKey } = parseApiKey(authToken);
 
   const hashedCode = md5.hash(accessCode ?? "").trim();
 
@@ -91,7 +91,7 @@ export async function auth(req: NextRequest) {
     accessToken === "" &&
     serverConfig.needCode &&
     !serverConfig.codes.has(hashedCode) &&
-    !token
+    !apiKey
   ) {
     return {
       error: true,
@@ -99,12 +99,25 @@ export async function auth(req: NextRequest) {
     };
   }
 
+  if (serverConfig.hideUserApiKey && !!apiKey) {
+    return {
+      error: true,
+      msg: "you are not allowed to access openai with your own api key",
+    };
+  }
+
   // if user does not provide an api key, inject system api key
-  if (!token) {
-    const apiKey = serverConfig.apiKey;
-    if (apiKey) {
+  if (!apiKey) {
+    const serverApiKey = serverConfig.isAzure
+      ? serverConfig.azureApiKey
+      : serverConfig.apiKey;
+
+    if (serverApiKey) {
       //console.log("[Auth] use system api key");
-      req.headers.set("Authorization", `Bearer ${apiKey}`);
+      req.headers.set(
+        "Authorization",
+        `${serverConfig.isAzure ? "" : "Bearer "}${serverApiKey}`,
+      );
     } else {
       console.log("[Auth] admin did not provide an api key");
     }

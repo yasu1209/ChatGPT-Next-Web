@@ -1,8 +1,10 @@
 import {
+  ApiPath,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
+  ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -14,6 +16,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
+import { makeAzurePath } from "@/app/azure";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -28,6 +31,8 @@ export class ChatGPTApi implements LLMApi {
   private disableListModels = true;
 
   path(path: string): string {
+    const accessStore = useAccessStore.getState();
+
     let contextRoot = window.location.pathname.split("/")[1];
     if (contextRoot !== "") {
       contextRoot = "/" + contextRoot;
@@ -35,20 +40,37 @@ export class ChatGPTApi implements LLMApi {
     let openaiUrl = contextRoot + useAccessStore.getState().openaiUrl;
     const apiPath = "/api/openai";
 
-    if (openaiUrl.length === 0) {
-      const isApp = !!getClientConfig()?.isApp;
-      openaiUrl = isApp ? DEFAULT_API_HOST : apiPath;
+    const isAzure = accessStore.provider === ServiceProvider.Azure;
+
+    if (isAzure && !accessStore.isValidAzure()) {
+      throw Error(
+        "incomplete azure config, please check it in your settings page",
+      );
     }
-    if (openaiUrl.endsWith("/")) {
-      openaiUrl = openaiUrl.slice(0, openaiUrl.length - 1);
+
+    let baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+
+    if (baseUrl.length === 0) {
+      const isApp = !!getClientConfig()?.isApp;
+      baseUrl = isApp ? DEFAULT_API_HOST : ApiPath.OpenAI;
+    }
+
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
     if (
       !openaiUrl.startsWith("http") &&
+      !baseUrl.startsWith(ApiPath.OpenAI) &&
       !openaiUrl.startsWith(contextRoot + apiPath)
     ) {
       openaiUrl = "https://" + openaiUrl;
     }
-    return [openaiUrl, path].join("/");
+
+    if (isAzure) {
+      path = makeAzurePath(path, accessStore.azureApiVersion);
+    }
+
+    return [baseUrl, path].join("/");
   }
 
   extractMessage(res: any) {
@@ -77,7 +99,8 @@ export class ChatGPTApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
-      max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
     console.log("[Request] openai payload: ", requestPayload);
@@ -162,14 +185,20 @@ export class ChatGPTApi implements LLMApi {
             }
             const text = msg.data;
             try {
-              const json = JSON.parse(text);
-              const delta = json.choices[0].delta.content;
+              const json = JSON.parse(text) as {
+                choices: Array<{
+                  delta: {
+                    content: string;
+                  };
+                }>;
+              };
+              const delta = json.choices[0]?.delta?.content;
               if (delta) {
                 responseText += delta;
                 options.onUpdate?.(responseText, delta);
               }
             } catch (e) {
-              console.error("[Request] parse error", text, msg);
+              console.error("[Request] parse error", text);
             }
           },
           onclose() {
