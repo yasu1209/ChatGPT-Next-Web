@@ -89,10 +89,14 @@ export const useAccessStore = createPersistStore(
       let urlParams = new URLSearchParams(window.location.search);
       let token = urlParams.get("access_token") || "";
       this.updateAccessToken(token);
+      let contextRoot = window.location.pathname.split("/")[1];
+      if (contextRoot !== "") {
+        contextRoot = "/" + contextRoot;
+      }
 
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
       fetchState = 1;
-      fetch("/api/config", {
+      fetch(contextRoot + "/api/config", {
         method: "post",
         body: null,
         headers: {
