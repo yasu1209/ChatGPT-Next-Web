@@ -39,7 +39,7 @@ async function handle(
     10 * 60 * 1000,
   );
 
-  const authResult = auth(req, ModelProvider.GeminiPro);
+  const authResult = await auth(req, ModelProvider.GeminiPro);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
