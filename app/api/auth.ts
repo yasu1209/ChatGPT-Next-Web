@@ -50,7 +50,9 @@ async function validateAccessToken(accessToken: string, tokenUrl: string) {
 
 function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const isApiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+  const isApiKey =
+    !token.startsWith(ACCESS_CODE_PREFIX) &&
+    !token.startsWith(ACCESS_TOKEN_PREFIX);
   const isAccessToken = token.startsWith(ACCESS_TOKEN_PREFIX);
 
   return {
