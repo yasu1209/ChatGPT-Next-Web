@@ -28,6 +28,7 @@ async function validateAccessToken(accessToken: string, tokenUrl: string) {
     });
   }
   return new Promise((resolve, reject) => {
+    console.log("[Auth] start validating access token");
     fetch(tokenUrl + "?token=" + accessToken, {
       method: "post",
     })
