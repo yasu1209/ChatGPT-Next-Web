@@ -71,6 +71,7 @@ export const getServerSideConfig = () => {
 
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
+  const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
 
   const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -78,6 +79,10 @@ export const getServerSideConfig = () => {
   const apiKey = apiKeys[randomIndex];
   console.log(
     `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
+  );
+
+  const whiteWebDevEndpoints = (process.env.WHITE_WEBDEV_ENDPOINTS ?? "").split(
+    ",",
   );
 
   return {
@@ -93,6 +98,11 @@ export const getServerSideConfig = () => {
     isGoogle,
     googleApiKey: process.env.GOOGLE_API_KEY,
     googleUrl: process.env.GOOGLE_URL,
+
+    isAnthropic,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
+    anthropicUrl: process.env.ANTHROPIC_URL,
 
     gtmId: process.env.GTM_ID,
 
@@ -110,5 +120,6 @@ export const getServerSideConfig = () => {
     allowToken: !!process.env.ALLOW_TOKEN,
     tokenURL: process.env.VALIDATE_TOKEN_URL,
     customModels,
+    whiteWebDevEndpoints,
   };
 };
