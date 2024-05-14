@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
+import { SignJWT, jwtVerify } from "jose";
 import md5 from "spark-md5";
 import {
   ACCESS_CODE_PREFIX,
@@ -21,12 +22,34 @@ function getIP(req: NextRequest) {
 // try to access an api using access token
 // if succeed, return true
 // if failed, return false
-async function validateAccessToken(accessToken: string, tokenUrl: string) {
+async function validateAccessToken(
+  accessToken: string,
+  tokenUrl: string,
+  tokenSignKey: string,
+) {
+  if (tokenSignKey !== "") {
+    const secretKey = new TextEncoder().encode(tokenSignKey);
+
+    try {
+      await jwtVerify(accessToken, secretKey);
+      console.log("[Auth] jwt access token validated");
+      return new Promise((resolve, reject) => {
+        resolve(true);
+      });
+    } catch (err) {
+      console.log("[Auth] jwt access token validation failed");
+      return new Promise((resolve, reject) => {
+        resolve(false);
+      });
+    }
+  }
+
   if (tokenUrl === "") {
     return new Promise((resolve, reject) => {
       resolve(false);
     });
   }
+
   return new Promise((resolve, reject) => {
     console.log("[Auth] start validating access token");
     fetch(tokenUrl + "?token=" + accessToken, {
@@ -79,13 +102,15 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
 
   if (serverConfig.allowToken && accessToken !== "") {
     let errorFlag = false;
-    await validateAccessToken(accessToken, serverConfig.tokenURL ?? "").then(
-      (flag) => {
-        if (!flag) {
-          errorFlag = true;
-        }
-      },
-    );
+    await validateAccessToken(
+      accessToken,
+      serverConfig.tokenURL ?? "",
+      serverConfig.tokenSignKey ?? "",
+    ).then((flag) => {
+      if (!flag) {
+        errorFlag = true;
+      }
+    });
     if (errorFlag) {
       return {
         error: true,

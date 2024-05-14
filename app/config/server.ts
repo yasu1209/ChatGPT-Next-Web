@@ -138,6 +138,7 @@ export const getServerSideConfig = () => {
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     allowToken: !!process.env.ALLOW_TOKEN,
     tokenURL: process.env.VALIDATE_TOKEN_URL,
+    tokenSignKey: process.env.TOKEN_SIGN_KEY,
     customModels,
     defaultModel,
     allowedWebDevEndpoints,
