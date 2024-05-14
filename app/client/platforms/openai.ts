@@ -146,7 +146,7 @@ export class ChatGPTApi implements LLMApi {
     };
 
     // add max_tokens to vision model
-    if (visionModel) {
+    if (visionModel && modelConfig.model.includes("preview")) {
       requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
     }
 
