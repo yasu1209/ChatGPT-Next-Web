@@ -83,6 +83,7 @@ export enum ModelProvider {
 export const Anthropic = {
   ChatPath: "v1/messages",
   ChatPath1: "v1/complete",
+  ChatPath2: "v1/audio/speech",
   ExampleEndpoint: "https://api.anthropic.com",
   Vision: "2023-06-01",
 };
@@ -92,6 +93,7 @@ export const OpenaiPath = {
   UsagePath: "dashboard/billing/usage",
   SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
+  AudioPath: "v1/audio/speech",
 };
 
 export const Azure = {

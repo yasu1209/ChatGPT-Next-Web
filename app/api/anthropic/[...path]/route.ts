@@ -11,7 +11,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
 import { collectModelTable } from "@/app/utils/model";
 
-const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
+const ALLOWD_PATH = new Set([
+  Anthropic.ChatPath,
+  Anthropic.ChatPath1,
+  Anthropic.ChatPath2,
+]);
 
 async function handle(
   req: NextRequest,
