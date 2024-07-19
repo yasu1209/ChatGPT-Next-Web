@@ -17,7 +17,7 @@ async function handle(
 
   const subpath = params.path.join("/");
 
-  const authResult = auth(req, ModelProvider.GPT);
+  const authResult = await auth(req, ModelProvider.GPT);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,

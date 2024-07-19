@@ -22,7 +22,7 @@ async function handle(
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.Doubao);
+  const authResult = await auth(req, ModelProvider.Doubao);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
