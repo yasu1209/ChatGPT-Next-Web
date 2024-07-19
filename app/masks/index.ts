@@ -25,8 +25,12 @@ export const BUILTIN_MASK_STORE = {
 export const BUILTIN_MASKS: BuiltinMask[] = [];
 
 if (typeof window != "undefined") {
+  let contextRoot = window.location.pathname.split("/")[1];
+  if (contextRoot !== "") {
+    contextRoot = "/" + contextRoot;
+  }
   // run in browser skip in next server
-  fetch("/masks.json")
+  fetch(contextRoot + "/masks.json")
     .then((res) => res.json())
     .catch((error) => {
       console.error("[Fetch] failed to fetch masks", error);
