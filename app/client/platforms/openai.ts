@@ -70,8 +70,6 @@ export class ChatGPTApi implements LLMApi {
     let openaiUrl = contextRoot + useAccessStore.getState().openaiUrl;
     const apiPath = "/api/openai";
 
-    const isAzure = accessStore.provider === ServiceProvider.Azure;
-
     let baseUrl = "";
 
     const isAzure = path.includes("deployments");
