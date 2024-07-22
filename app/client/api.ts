@@ -244,6 +244,10 @@ export function getHeaders() {
 
   if (bearerToken) {
     headers[authHeader] = bearerToken;
+  } else if (accessStore.allowToken && accessStore.accessToken !== "") {
+    headers.Authorization = getBearerToken(
+      ACCESS_TOKEN_PREFIX + accessStore.accessToken,
+    );
   } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
     headers["Authorization"] = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
