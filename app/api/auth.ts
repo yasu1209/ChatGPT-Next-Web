@@ -152,6 +152,9 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
     let systemApiKey: string | undefined;
 
     switch (modelProvider) {
+      case ModelProvider.Stability:
+        systemApiKey = serverConfig.stabilityApiKey;
+        break;
       case ModelProvider.GeminiPro:
         systemApiKey = serverConfig.googleApiKey;
         break;
