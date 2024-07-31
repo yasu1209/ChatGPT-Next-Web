@@ -56,6 +56,11 @@ export class QwenApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
+    let contextRoot = window.location.pathname.split("/")[1];
+    if (contextRoot !== "") {
+      contextRoot = "/" + contextRoot;
+    }
+
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
@@ -67,10 +72,18 @@ export class QwenApi implements LLMApi {
       baseUrl = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
     }
 
+    if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+      baseUrl = contextRoot + baseUrl;
+    }
+
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Alibaba)) {
+    if (
+      !baseUrl.startsWith("http") &&
+      !baseUrl.startsWith(ApiPath.Alibaba) &&
+      !baseUrl.startsWith(contextRoot + ApiPath.Alibaba)
+    ) {
       baseUrl = "https://" + baseUrl;
     }
 
