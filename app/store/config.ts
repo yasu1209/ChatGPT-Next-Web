@@ -135,12 +135,12 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 3.9,
+    version: 3.91,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
       if (version < 3.4) {
-        state.modelConfig.sendMemory = true;
+        state.modelConfig.sendMemory = false;
         state.modelConfig.historyMessageCount = 4;
         state.modelConfig.compressMessageLengthThreshold = 1000;
         state.modelConfig.frequency_penalty = 0;
@@ -171,6 +171,10 @@ export const useAppConfig = createPersistStore(
           state.modelConfig.template !== DEFAULT_INPUT_TEMPLATE
             ? state.modelConfig.template
             : config?.template ?? DEFAULT_INPUT_TEMPLATE;
+      }
+
+      if (version < 3.91) {
+        state.modelConfig.sendMemory = false;
       }
 
       return state as any;
