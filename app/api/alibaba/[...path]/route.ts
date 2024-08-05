@@ -13,12 +13,13 @@ import { isModelAvailableInServer } from "@/app/utils/model";
 import type { RequestPayload } from "@/app/client/platforms/openai";
 
 const serverConfig = getServerSideConfig();
+const RECORD_MESSAGE = !!process.env.RECORD_MESSAGE;
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Alibaba Route] params ", params);
+  //console.log("[Alibaba Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
@@ -80,8 +81,8 @@ async function request(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  //console.log("[Proxy] ", path);
+  //console.log("[Base Url]", baseUrl);
 
   const timeoutId = setTimeout(
     () => {
@@ -105,13 +106,27 @@ async function request(req: NextRequest) {
     signal: controller.signal,
   };
 
+  const reqBody = await req.text();
+  fetchOptions.body = reqBody;
+  if (RECORD_MESSAGE) {
+    try {
+      const jsonText = JSON.parse(reqBody);
+      if (jsonText.input.messages) {
+        console.log(
+          "[Chat] message: ",
+          jsonText.input.messages.slice(-1)[0].content,
+        );
+      }
+    } catch (e) {}
+  }
+
   // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
+      //const clonedBody = await req.text();
+      fetchOptions.body = reqBody;
 
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
+      const jsonBody = JSON.parse(reqBody) as { model?: string };
 
       // not undefined and is false
       if (
