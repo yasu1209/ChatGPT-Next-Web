@@ -147,7 +147,11 @@ export const usePromptStore = createPersistStore(
     },
 
     onRehydrateStorage(state) {
-      const PROMPT_URL = "./prompts.json";
+      let contextRoot = window.location.pathname.split("/")[1];
+      if (contextRoot !== "") {
+        contextRoot = "/" + contextRoot;
+      }
+      const PROMPT_URL = "." + contextRoot + "/prompts.json";
 
       type PromptList = Array<[string, string]>;
 
