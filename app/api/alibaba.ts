@@ -1,6 +1,7 @@
 import { getServerSideConfig } from "@/app/config/server";
 import {
-  BYTEDANCE_BASE_URL,
+  Alibaba,
+  ALIBABA_BASE_URL,
   ApiPath,
   ModelProvider,
   ServiceProvider,
@@ -9,20 +10,22 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
+import type { RequestPayload } from "@/app/client/platforms/openai";
 
 const serverConfig = getServerSideConfig();
+const RECORD_MESSAGE = !!process.env.RECORD_MESSAGE;
 
-async function handle(
+export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[ByteDance Route] params ", params);
+  //console.log("[Alibaba Route] params ", params);
 
   if (req.method === "OPTIONS") {
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = await auth(req, ModelProvider.Doubao);
+  const authResult = await auth(req, ModelProvider.Qwen);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
@@ -33,41 +36,18 @@ async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[ByteDance] ", e);
+    console.error("[Alibaba] ", e);
     return NextResponse.json(prettyObject(e));
   }
 }
 
-export const GET = handle;
-export const POST = handle;
-
-export const runtime = "edge";
-export const preferredRegion = [
-  "arn1",
-  "bom1",
-  "cdg1",
-  "cle1",
-  "cpt1",
-  "dub1",
-  "fra1",
-  "gru1",
-  "hnd1",
-  "iad1",
-  "icn1",
-  "kix1",
-  "lhr1",
-  "pdx1",
-  "sfo1",
-  "sin1",
-  "syd1",
-];
-
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.ByteDance, "");
+  // alibaba use base url or just remove the path
+  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Alibaba, "");
 
-  let baseUrl = serverConfig.bytedanceUrl || BYTEDANCE_BASE_URL;
+  let baseUrl = serverConfig.alibabaUrl || ALIBABA_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -77,8 +57,8 @@ async function request(req: NextRequest) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  //console.log("[Proxy] ", path);
+  //console.log("[Base Url]", baseUrl);
 
   const timeoutId = setTimeout(
     () => {
@@ -88,11 +68,11 @@ async function request(req: NextRequest) {
   );
 
   const fetchUrl = `${baseUrl}${path}`;
-
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       Authorization: req.headers.get("Authorization") ?? "",
+      "X-DashScope-SSE": req.headers.get("X-DashScope-SSE") ?? "disable",
     },
     method: req.method,
     body: req.body,
@@ -102,20 +82,34 @@ async function request(req: NextRequest) {
     signal: controller.signal,
   };
 
+  const reqBody = await req.text();
+  fetchOptions.body = reqBody;
+  if (RECORD_MESSAGE) {
+    try {
+      const jsonText = JSON.parse(reqBody);
+      if (jsonText.input.messages) {
+        console.log(
+          "[Chat] message: ",
+          jsonText.input.messages.slice(-1)[0].content,
+        );
+      }
+    } catch (e) {}
+  }
+
   // #1815 try to refuse some request to some models
   if (serverConfig.customModels && req.body) {
     try {
-      const clonedBody = await req.text();
-      fetchOptions.body = clonedBody;
+      //const clonedBody = await req.text();
+      fetchOptions.body = reqBody;
 
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
+      const jsonBody = JSON.parse(reqBody) as { model?: string };
 
       // not undefined and is false
       if (
         isModelAvailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.ByteDance as string,
+          ServiceProvider.Alibaba as string,
         )
       ) {
         return NextResponse.json(
@@ -129,10 +123,9 @@ async function request(req: NextRequest) {
         );
       }
     } catch (e) {
-      console.error(`[ByteDance] filter`, e);
+      console.error(`[Alibaba] filter`, e);
     }
   }
-
   try {
     const res = await fetch(fetchUrl, fetchOptions);
 
