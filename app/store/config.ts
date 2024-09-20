@@ -50,8 +50,8 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "gpt-4o-mini" as ModelType,
-    providerName: "OpenAI" as ServiceProvider,
+    model: "qwen-max" as ModelType,
+    providerName: "Alibaba" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 4000,
@@ -60,8 +60,8 @@ export const DEFAULT_CONFIG = {
     sendMemory: false,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
-    compressModel: "gpt-4o-mini" as ModelType,
-    compressProviderName: "OpenAI" as ServiceProvider,
+    compressModel: "qwen-max" as ModelType,
+    compressProviderName: "Alibaba" as ServiceProvider,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as DalleSize,
@@ -142,7 +142,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4,
+    version: 4.1,
     migrate(persistedState, version) {
       const state = persistedState as ChatConfig;
 
@@ -181,6 +181,13 @@ export const useAppConfig = createPersistStore(
       }
 
       if (version < 4) {
+        state.modelConfig.compressModel =
+          DEFAULT_CONFIG.modelConfig.compressModel;
+        state.modelConfig.compressProviderName =
+          DEFAULT_CONFIG.modelConfig.compressProviderName;
+      }
+
+      if (version < 4.1) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
