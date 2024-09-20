@@ -25,7 +25,7 @@ export async function handle(
     return NextResponse.json({ body: "OK" }, { status: 200 });
   }
 
-  const authResult = auth(req, ModelProvider.Iflytek);
+  const authResult = await auth(req, ModelProvider.Iflytek);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
