@@ -344,6 +344,7 @@ const alibabaModes = [
   "qwen-turbo",
   "qwen-plus",
   "qwen-max",
+  "qwen-max-0919",
   "qwen-max-0428",
   "qwen-max-0403",
   "qwen-max-0107",

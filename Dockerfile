@@ -1,4 +1,4 @@
-FROM 10.191.5.149:8084/node:18-alpine AS base
+FROM node:18-alpine AS base
 
 FROM base AS deps
 
