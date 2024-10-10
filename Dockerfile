@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM 10.191.5.149:8084/node:18-alpine AS base
 
 FROM base AS deps
 
@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn config set registry 'https://registry.npmmirror.com/'
+RUN yarn config set registry 'http://registry.npm.taobao.org/'
 RUN yarn install
 
 FROM base AS builder

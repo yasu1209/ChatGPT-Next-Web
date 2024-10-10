@@ -50,6 +50,8 @@ export const DEFAULT_CONFIG = {
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
+  enableArtifacts: true, // show artifacts config
+
   disablePromptHint: false,
 
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
@@ -69,8 +71,8 @@ export const DEFAULT_CONFIG = {
     sendMemory: false,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
-    compressModel: "qwen-max" as ModelType,
-    compressProviderName: "Alibaba" as ServiceProvider,
+    compressModel: "",
+    compressProviderName: "",
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
     size: "1024x1024" as DalleSize,
@@ -229,7 +231,7 @@ export const useAppConfig = createPersistStore(
             : config?.template ?? DEFAULT_INPUT_TEMPLATE;
       }
 
-      if (version < 4) {
+      if (version < 4.1) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =
