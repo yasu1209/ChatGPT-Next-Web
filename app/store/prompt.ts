@@ -151,6 +151,7 @@ export const usePromptStore = createPersistStore(
       if (typeof window === "undefined") {
         return;
       }
+
       let contextRoot = "";
       contextRoot = window.location.pathname.split("/")[1];
       if (contextRoot !== "") {

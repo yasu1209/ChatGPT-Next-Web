@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { SignJWT, jwtVerify } from "jose";
+import { jwtVerify } from "jose";
 import md5 from "spark-md5";
 import {
   ACCESS_CODE_PREFIX,
@@ -176,6 +176,18 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
       case ModelProvider.Iflytek:
         systemApiKey =
           serverConfig.iflytekApiKey + ":" + serverConfig.iflytekApiSecret;
+        break;
+      case ModelProvider.DeepSeek:
+        systemApiKey = serverConfig.deepseekApiKey;
+        break;
+      case ModelProvider.XAI:
+        systemApiKey = serverConfig.xaiApiKey;
+        break;
+      case ModelProvider.ChatGLM:
+        systemApiKey = serverConfig.chatglmApiKey;
+        break;
+      case ModelProvider.SiliconFlow:
+        systemApiKey = serverConfig.siliconFlowApiKey;
         break;
       case ModelProvider.GPT:
       default:
