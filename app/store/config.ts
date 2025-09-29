@@ -64,8 +64,8 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "qwen-max" as ModelType,
-    providerName: "Alibaba" as ServiceProvider,
+    model: "qwen3-coder" as ModelType,
+    providerName: "Custom" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 4000,
@@ -195,7 +195,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.1,
+    version: 4.2,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -255,7 +255,7 @@ export const useAppConfig = createPersistStore(
           DEFAULT_CONFIG.modelConfig.compressProviderName;
       }
 
-      if (version < 4.1) {
+      if (version < 4.2) {
         state.modelConfig.compressModel =
           DEFAULT_CONFIG.modelConfig.compressModel;
         state.modelConfig.compressProviderName =

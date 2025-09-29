@@ -132,6 +132,7 @@ export enum ServiceProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Custom = "Custom",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -158,6 +159,7 @@ export enum ModelProvider {
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
   SiliconFlow = "SiliconFlow",
+  Custom = "Custom",
 }
 
 export const Stability = {
@@ -261,6 +263,11 @@ export const ChatGLM = {
 
 export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
+  ChatPath: "v1/chat/completions",
+};
+
+export const Custom = {
+  ExampleEndpoint: OPENAI_BASE_URL,
   ChatPath: "v1/chat/completions",
 };
 
@@ -498,6 +505,7 @@ const openaiModels = [
   "o1-mini",
   "o1-preview",
   "o3-mini",
+  "qwen3-coder",
 ];
 
 const googleModels = [
@@ -595,7 +603,14 @@ const iflytekModels = [
   "4.0Ultra",
 ];
 
-const deepseekModels = ["deepseek-chat", "deepseek-coder", "deepseek-reasoner"];
+const deepseekModels = [
+  "deepseek-chat",
+  "deepseek-coder",
+  "deepseek-reasoner",
+  "deepseek-v3",
+  "deepseek-r1",
+  "deepseek-r1-distill-llama-70b",
+];
 
 const xAIModes = [
   "grok-beta",
@@ -644,6 +659,8 @@ const siliconflowModels = [
   "Pro/deepseek-ai/DeepSeek-R1",
   "Pro/deepseek-ai/DeepSeek-V3",
 ];
+
+const customModels = ["qwen3-coder"];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
@@ -799,6 +816,17 @@ export const DEFAULT_MODELS = [
       providerName: "SiliconFlow",
       providerType: "siliconflow",
       sorted: 14,
+    },
+  })),
+  ...customModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "custom",
+      providerName: "Custom",
+      providerType: "Custom",
+      sorted: 15,
     },
   })),
 ] as const;
